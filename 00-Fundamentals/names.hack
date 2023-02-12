@@ -3,8 +3,6 @@
 // which can optionally be followed by those same characters or decimal digits.
 // Local variable names, function parameter names and property names must be preceded by $.
 
-
-
 //The name $this is predefined inside any instance method or constructor when that method is called from within an object context.
 // $this is read-only and designates the object on which the method is being called, or the object being constructed. 
 // The type of $this is this.
