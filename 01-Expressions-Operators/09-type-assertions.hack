@@ -56,3 +56,27 @@ $y is shape('foo' => int); // true
 
 // Enforcing Types with as and ?as
 // as performs the same checks as is.
+// However, it throws TypeAssertionException if the value has a different type. 
+// The type checker understands that the value must have the type specified afterwards, so it refines the value.
+1 as int;        // 1
+'foo' as int;    // TypeAssertionException
+
+// as enables you to narrow a type.
+// Normally you'd want to make transport take a Vehicle
+// directly, so you can check when you call the function.
+function transport(mixed $m): void {
+  // Exception if not a Vehicle.
+  $v = $m as Vehicle;
+
+  if ($v is Car) {
+    $v->drive();
+  } else {
+    // Exception if $v is not a Boat.
+    $v as Boat;
+    $v->sail();
+  }
+}
+
+// Hack also provides ?as, which returns null if the type does not match.
+1 ?as int;        // 1
+'foo' ?as int;    // null
