@@ -62,3 +62,111 @@ vec(dict['key1' => 'value1']); // vec['value1']
 
 // Type checks.
 $items is vec<_>; // true
+
+// keyset
+// a keyset is an ordered data structure without duplicates. It is created with the keyset[] syntax.
+// a keyset can only contain string or int values.
+// Creating a keyset.
+function get_items(): keyset<string> {
+  $items = keyset['a', 'b', 'c'];
+  return $items;
+}
+$items = keyset['a', 'b', 'c'];
+
+// Checking if a keyset contains a value.
+C\contains($items, 'a'); // true
+
+// Adding/removing items. These operations set $items to a modified copy,
+// and do not modify the original value.
+$items[] = 'd'; // keyset['a', 'b', 'c', 'd']
+$items[] = 'a'; // keyset['a', 'b', 'c', 'd']
+unset($items['b']); // keyset['a', 'c', 'd']
+
+// Getting the length.
+C\count($items); // 3
+
+// Iterating.
+foreach ($items as $item) {
+  echo $item;
+}
+
+// Equality checks. === returns false if the order does not match.
+keyset[1] === keyset[1]; // true
+keyset[1, 2] === keyset[2, 1]; // false
+Keyset\equal(keyset[1, 2], keyset[2, 1]); // true
+
+// Combining keysets.
+Keyset\union(keyset[1, 2], keyset[2, 3]); // keyset[1, 2, 3]
+
+// Converting from an Iterable.
+keyset(vec[1, 2, 1]); // keyset[1, 2]
+keyset(Vector { 20, 21 }); // keyset[20, 21]
+keyset(dict['key1' => 'value1']); // keyset['value1']
+
+// Type checks.
+$items is keyset<_>; // true
+
+//dict
+// A dict is an ordered key-value data structure. It is created with the dict[] syntax.
+// Keys must be strings or ints. dicts are ordered according to the insertion order.
+// Creating a dict.
+function get_items(): dict<string, int> {
+  $items = dict['a' => 1, 'b' => 3];
+  return $items;
+}
+
+$items = dict['a' => 1, 'b' => 3];
+
+// Accessing items by key.
+$items['a']; // 1
+$items['foo']; // throws OutOfBoundsException
+
+// Accessing keys that may be absent.
+idx($items, 'a'); // 1
+idx($items, 'z'); // null
+idx($items, 'z', 'default'); // 'default'
+
+// Inserting, updating or removing values in a dict. These operations
+// set $items to a modified copy, and do not modify the original value.
+$items['a'] = 42; // dict['a' => 42, 'b' => 3]
+$items['z'] = 100; // dict['a' => 42, 'b' => 3, 'z' => 100]
+unset($items['b']); // dict['a' => 42, 'z' => 100]
+
+// Getting the keys.
+Vec\keys(dict['a' => 1, 'b' => 3]); // vec['a', 'b']
+
+// Getting the values.
+vec(dict['a' => 1, 'b' => 3]); // vec[1, 3]
+
+// Getting the length.
+C\count($items); // 2
+
+// Checking if a dict contains a key or value.
+C\contains_key($items, 'a'); // true
+C\contains($items, 3); // true
+
+// Iterating values.
+foreach ($items as $value) {
+  echo $value; // e.g. 1
+}
+// Iterating keys and values.
+foreach ($items as $key => $value) {
+  echo $key;   // e.g. 'a'
+  echo $value; // e.g. 1
+}
+
+// Equality checks. === returns false if the order does not match.
+dict[] === dict[]; // true
+dict[0 => 10, 1 => 11] === dict[1 => 11, 0 => 10]; // false
+Dict\equal(dict[0 => 10, 1 => 11], dict[1 => 11, 0 => 10]); // true
+
+// Combining dicts (last item wins).
+Dict\merge(dict[10 => 1, 20 => 2], dict[30 => 3, 10 => 0]);
+// dict[10 => 0, 20 => 2, 30 => 3];
+
+// Converting from an Iterable.
+dict(vec['a', 'b']); // dict[0 => 'a', 1 => 'b']
+dict(Map {'a' => 5}); // dict['a' => 5]
+
+// Type checks.
+$items is dict<_, _>; // true
